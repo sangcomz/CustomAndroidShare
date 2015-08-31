@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/area"
+    android:background="#99000000"
+    android:layout_height="wrap_content"
+    tools:context="com.hansigan.foodnote.ShareActivity">
+
+    <RelativeLayout
+        android:id="@+id/finish_are"
+        android:layout_above="@+id/share_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:visibility="invisible"
+        android:id="@+id/share_area"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+        <TextView
+            android:id="@+id/share_text"
+            android:paddingLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textSize="20dp"
+            android:textColor="#2d2d2d"
+            android:textStyle="bold"
+            android:text="공유하기" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_below="@+id/share_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
