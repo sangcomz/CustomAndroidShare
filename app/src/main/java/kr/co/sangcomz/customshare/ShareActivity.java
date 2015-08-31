@@ -42,8 +42,8 @@ public class ShareActivity extends Activity {
     RelativeLayout shareArea;
     RelativeLayout finishArea;
 
-    public static String filePath;
-    public static String fileName;
+    String filePath;
+    String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
