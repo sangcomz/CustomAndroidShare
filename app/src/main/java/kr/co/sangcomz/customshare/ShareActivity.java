@@ -171,7 +171,7 @@ public class ShareActivity extends Activity {
                         if (file.exists())
                             sendIntent(file, position);
                         else
-                            setPackageFolderProfileImageSave(context, "http://th-p.talk.kakao.co.kr/th/talkp/wkkMOQRHlA/ZHkwyxmkntDTD2VspKiKfk/oxgctc_640x640_s.jpg", position);
+                            setPackageFolderProfileImageSave(context, "YOUR_IMAGE_URL", position);
                     }
                 }
             });
