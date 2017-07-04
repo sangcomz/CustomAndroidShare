@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CustomShare.iml" filepath="$PROJECT_DIR$/CustomShare.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CustomAndroidShare.iml" filepath="$PROJECT_DIR$/CustomAndroidShare.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

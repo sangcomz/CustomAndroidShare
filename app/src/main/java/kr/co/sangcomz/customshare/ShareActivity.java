@@ -1,16 +1,11 @@
 package kr.co.sangcomz.customshare;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,15 +18,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.FileAsyncHttpResponseHandler;
-
-import org.apache.http.Header;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 public class ShareActivity extends Activity {
@@ -41,9 +27,6 @@ public class ShareActivity extends Activity {
     DoShareAdapter doShareAdapter;
     RelativeLayout shareArea;
     RelativeLayout finishArea;
-
-    String filePath;
-    String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +40,6 @@ public class ShareActivity extends Activity {
         recyclerView.setAdapter(doShareAdapter);
         animRelative(-1);
 
-        final long unixTime = System.currentTimeMillis() / 1000L;
-        filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/tmp_custom_share/";
-        fileName = unixTime + "temp_customShare.jpg";
-
         finishArea = (RelativeLayout) findViewById(R.id.finish_are);
         finishArea.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,27 +50,9 @@ public class ShareActivity extends Activity {
 
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        startExtMediaScan(this);
-        File file = new File(filePath, fileName);
-        if (file.exists())
-            file.delete();
-
-    }
-
-    public static void startExtMediaScan(Context mContext) {
-        mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-    }
-
-
     private void animRelative(final int isUp) {
         ViewCompat.animate(shareArea)
-//                .setInterpolator(AnimUtils.FAST_OUT_SLOW_IN_INTERPOLATOR) //사라지는 모양
                 .setInterpolator(new FastOutLinearInInterpolator())
-//                .setInterpolator(AnimUtils.LINEAR_OUT_SLOW_IN_INTERPOLATOR)
                 .translationYBy(isUp * convertDP(this, -300))
 
                 .setDuration(300)
@@ -167,11 +128,7 @@ public class ShareActivity extends Activity {
                         //카카오톡일경우에 할 액션.
                         System.out.println("카카오톡!");
                     } else {
-                        File file = new File(filePath, fileName);
-                        if (file.exists())
-                            sendIntent(file, position);
-                        else
-                            setPackageFolderProfileImageSave(context, "YOUR_IMAGE_URL", position);
+                        sendIntent(position);
                     }
                 }
             });
@@ -182,9 +139,8 @@ public class ShareActivity extends Activity {
             return resInfo.size();
         }
 
-        public void sendIntent(File file, int position) {
+        public void sendIntent(int position) {
             Intent targetedShareIntent = (Intent) shareIntent.clone();
-            targetedShareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
             targetedShareIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
             targetedShareIntent.putExtra(Intent.EXTRA_TEXT, "Text");
             targetedShareIntent.setPackage(resInfo.get(position).activityInfo.packageName);
@@ -193,63 +149,5 @@ public class ShareActivity extends Activity {
             context.startActivity(targetedShareIntent);
         }
 
-        // 인터넷 파일 저장.
-        public void setPackageFolderProfileImageSave(final Context context, String url, final int position) {
-            final ProgressDialog progressDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
-            progressDialog.setMessage("잠시만 기다려주세요.");
-            progressDialog.show();
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.get(url, new FileAsyncHttpResponseHandler(context) {
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, File response) {
-                    // Do something with the file `response`
-                    Bitmap myBitmap = BitmapFactory.decodeFile(response.getAbsolutePath());
-//
-                    File file = SaveBitmapToFileCache(myBitmap,
-                            filePath, fileName);
-                    sendIntent(file, position);
-                    progressDialog.dismiss();
-                }
-            });
-
-
-        }
-
-        // Bitmap to File
-        public File SaveBitmapToFileCache(Bitmap bitmap, String strFilePath,
-                                          String filename) {
-            File file = new File(strFilePath);
-
-
-            // If no folders
-            if (!file.exists()) {
-                file.mkdirs();
-                // Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-            }
-            File fileCacheItem = new File(strFilePath + filename);
-            OutputStream out = null;
-
-            try {
-                fileCacheItem.createNewFile();
-                out = new FileOutputStream(fileCacheItem);
-
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return fileCacheItem;
-        }
     }
-
 }
